@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import FindRoom from "./components/FindRoom";
-import ChatRoom from "./components/ChatRoom";
+import FindRoom from "./components/findRoom";
+import ChatRoom from "./components/chatRoom";
 
 // Supabase configuration placeholders - you will need to replace these
 const supabaseUrl = "https://jpsnxxouhuhrifoztpmc.supabase.co";
