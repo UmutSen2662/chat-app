@@ -49,7 +49,7 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
                     },
                     (payload: any) => {
                         setMessages((prevMessages) => [...prevMessages, payload.new]);
-                    }
+                    },
                 )
                 .subscribe();
 
@@ -150,7 +150,7 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
                                 }
                             },
                             "image/webp",
-                            0.8
+                            0.8,
                         ); // 0.8 is the quality
                     };
                     img.src = event.target?.result as string;
@@ -190,24 +190,44 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
     const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        dragCounter.current++;
-        if (dragCounter.current === 1) {
-            setIsDragging(true);
+
+        const isImage = Array.from(e.dataTransfer.items || []).some(
+            (item) => item.kind === "file" && item.type.startsWith("image/")
+        );
+
+        if (isImage) {
+            dragCounter.current++;
+            if (dragCounter.current === 1) {
+                setIsDragging(true);
+            }
         }
     };
 
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        dragCounter.current--;
-        if (dragCounter.current === 0) {
-            setIsDragging(false);
+
+        const isImage = Array.from(e.dataTransfer.items || []).some(
+            (item) => item.kind === "file" && item.type.startsWith("image/")
+        );
+
+        if (isImage) {
+            dragCounter.current--;
+            if (dragCounter.current === 0) {
+                setIsDragging(false);
+            }
         }
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
+        const isImage = Array.from(e.dataTransfer.items || []).some(
+            (item) => item.kind === "file" && item.type.startsWith("image/")
+        );
+
+        if (isImage) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -297,6 +317,32 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
         setSelectedImage(null);
     };
 
+    // Helper function to render message content with clickable links
+    const renderContent = (content: string) => {
+        if (!content) return null;
+
+        // Regex to match URLs
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = content.split(urlRegex);
+
+        return parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={index}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline break-all"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    };
+
     return (
         <>
             {/* Message Container */}
@@ -378,7 +424,7 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
                                         />
                                     )}
                                     <div className="flex gap-2">
-                                        <p className="text-n100 mr-auto">{message.content}</p>
+                                        <p className="text-n100 mr-auto">{renderContent(message.content)}</p>
                                         <span className="text-n400 text-xs h-fit text-nowrap mt-auto">
                                             {new Date(message.created_at).toLocaleTimeString("en-GB", {
                                                 hour: "2-digit",
@@ -424,7 +470,7 @@ const MessageBox = ({ supabase, room, user, localUserId }: any) => {
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
                     className={"flex-1 p-3 bg-n700 text-n100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none overflow-hidden".concat(
-                        MAX_MESSAGE_LENGTH - newMessage.length < 100 ? " pr-16" : ""
+                        MAX_MESSAGE_LENGTH - newMessage.length < 100 ? " pr-16" : "",
                     )}
                     maxLength={MAX_MESSAGE_LENGTH}
                     rows={1}
