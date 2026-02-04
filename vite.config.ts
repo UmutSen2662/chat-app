@@ -40,8 +40,4 @@ export default defineConfig({
             },
         }),
     ],
-    base: "/chat-app/",
-    build: {
-        outDir: "docs",
-    },
 });
