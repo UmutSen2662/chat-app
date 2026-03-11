@@ -31,8 +31,8 @@ const FindRoom = ({ supabase, user, setUser, onRoomSelect }: any) => {
         if (!supabase) return;
 
         try {
-            // Fetching the room ID and name
-            const { data, error } = await supabase.from("rooms").select("id, name");
+            // Fetching the room ID, name, and password_hash
+            const { data, error } = await supabase.from("rooms").select("id, name, password_hash");
             if (error) {
                 throw error;
             }
@@ -244,27 +244,36 @@ const FindRoom = ({ supabase, user, setUser, onRoomSelect }: any) => {
                                     {/* Password entry field (only shows when room is selected) */}
                                     {selectedRoom?.id === room.id && (
                                         <div className="mt-4 flex flex-col gap-2">
-                                            <form
-                                                onSubmit={(e) => {
-                                                    e.preventDefault();
-                                                    handleJoinRoom(room, passwordInput);
-                                                }}
-                                                className="flex flex gap-2"
-                                            >
-                                                <input
-                                                    type="password"
-                                                    placeholder="Enter password"
-                                                    value={passwordInput}
-                                                    onChange={(e) => setPasswordInput(e.target.value)}
-                                                    className="w-full p-2 bg-n800 text-n100 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                                />
+                                            {room.password_hash ? (
+                                                <form
+                                                    onSubmit={(e) => {
+                                                        e.preventDefault();
+                                                        handleJoinRoom(room, passwordInput);
+                                                    }}
+                                                    className="flex flex gap-2"
+                                                >
+                                                    <input
+                                                        type="password"
+                                                        placeholder="Enter password"
+                                                        value={passwordInput}
+                                                        onChange={(e) => setPasswordInput(e.target.value)}
+                                                        className="w-full p-2 bg-n800 text-n100 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    />
+                                                    <button
+                                                        onClick={() => handleJoinRoom(room, passwordInput)}
+                                                        className="w-fit text-nowrap bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-md transition-colors duration-200"
+                                                    >
+                                                        Join Room
+                                                    </button>
+                                                </form>
+                                            ) : (
                                                 <button
-                                                    onClick={() => handleJoinRoom(room, passwordInput)}
-                                                    className="w-fit text-nowrap bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-md transition-colors duration-200"
+                                                    onClick={() => handleJoinRoom(room, "")}
+                                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-2 rounded-md transition-colors duration-200"
                                                 >
                                                     Join Room
                                                 </button>
-                                            </form>
+                                            )}
                                             {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
                                         </div>
                                     )}
