@@ -45,4 +45,8 @@ jobs:
 
       - name: Trigger Dokploy Redeploy
         run: |
-          curl -sSf -H "Accept: application/json" -H "Content-Type: application/json" -X POST ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+          curl -sSf -X POST 'https://dokploy.umutsen.dev/api/application.deploy' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -H 'x-api-key: ${{ secrets.DOKPLOY_API_TOKEN }}' \
+            -d '{ "applicationId": "${{ secrets.DOKPLOY_APP_ID }}" }'
