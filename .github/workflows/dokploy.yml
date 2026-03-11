@@ -43,7 +43,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Optional: Trigger Dokploy webhook to redeploy automatically
-      # Uncomment the step below and add DOKPLOY_WEBHOOK_URL to your GitHub repository secrets
-      # - name: Trigger Dokploy Redeploy
-      #   run: curl -X GET ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+      - name: Trigger Dokploy Redeploy
+        run: curl -X GET ${{ secrets.DOKPLOY_WEBHOOK_URL }}
