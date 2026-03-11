@@ -44,4 +44,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Trigger Dokploy Redeploy
-        run: curl -sSf -X GET ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+        run: curl -sSf -H "Accept: application/json" -H "Content-Type: application/json" -X GET ${{ secrets.DOKPLOY_WEBHOOK_URL }}
