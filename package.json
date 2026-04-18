@@ -17,6 +17,7 @@
         "@tailwindcss/vite": "^4.1.11",
         "react": "^19.2.1",
         "react-dom": "^19.2.1",
+        "simple-rnnoise-wasm": "github:JSmith01/simple-rnnoise-wasm",
         "tailwindcss": "^4.1.11"
     },
     "devDependencies": {
